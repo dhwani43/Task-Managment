@@ -24,6 +24,18 @@ export async function createTask(formData: FormData) {
         return { error: 'Title is required' }
     }
 
+    if (title.length < 5 || title.length > 50) {
+        return { error: 'Title must be between 5 and 50 characters' }
+    }
+
+    if (!description) {
+        return { error: 'Description is required' }
+    }
+
+    if (description.length < 5 || description.length > 1000) {
+        return { error: 'Description must be between 5 and 1000 characters' }
+    }
+
     try {
         await prisma.task.create({
             data: {
@@ -45,6 +57,22 @@ export async function updateTask(id: string, formData: FormData) {
     const description = formData.get('description') as string
     const priority = formData.get('priority') as string
     const status = formData.get('status') as string
+
+    if (!title) {
+        return { error: 'Title is required' }
+    }
+
+    if (title.length < 5 || title.length > 50) {
+        return { error: 'Title must be between 5 and 50 characters' }
+    }
+
+    if (!description) {
+        return { error: 'Description is required' }
+    }
+
+    if (description.length < 5 || description.length > 1000) {
+        return { error: 'Description must be between 5 and 1000 characters' }
+    }
 
     try {
         await prisma.task.update({

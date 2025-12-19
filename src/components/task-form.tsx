@@ -28,20 +28,48 @@ interface TaskFormProps {
 
 export function TaskForm({ task, onSuccess }: TaskFormProps) {
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleSubmit(formData: FormData) {
     setLoading(true)
+    setError(null)
+
+    const title = formData.get('title') as string
+    if (title.length < 5 || title.length > 50) {
+      setError('Title must be between 5 and 50 characters')
+      setLoading(false)
+      return
+    }
+
+    const description = formData.get('description') as string
+    if (!description || description.length < 5 || description.length > 1000) {
+      setError('Description must be between 5 and 1000 characters')
+      setLoading(false)
+      return
+    }
+
+    let result
     if (task) {
-      await updateTask(task.id, formData)
+      result = await updateTask(task.id, formData)
     } else {
-      await createTask(formData)
+      result = await createTask(formData)
+    }
+
+    if (result.error) {
+      setError(result.error)
+    } else {
+      onSuccess?.()
     }
     setLoading(false)
-    onSuccess?.()
   }
 
   return (
     <form action={handleSubmit} className="space-y-4">
+      {error && (
+        <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
+          {error}
+        </div>
+      )}
       <div className="space-y-2">
         <Label htmlFor="title">Title</Label>
         <Input
@@ -49,6 +77,8 @@ export function TaskForm({ task, onSuccess }: TaskFormProps) {
           name="title"
           defaultValue={task?.title}
           required
+          minLength={5}
+          maxLength={50}
           placeholder="Task title"
         />
       </div>
@@ -59,6 +89,9 @@ export function TaskForm({ task, onSuccess }: TaskFormProps) {
           name="description"
           defaultValue={task?.description || ''}
           placeholder="Task description"
+          required
+          minLength={5}
+          maxLength={1000}
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
