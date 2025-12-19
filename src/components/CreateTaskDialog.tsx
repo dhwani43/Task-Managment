@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { TaskForm } from './task-form'
+import { TaskForm } from './TaskForm'
 import { Plus } from 'lucide-react'
 
 export function CreateTaskDialog() {

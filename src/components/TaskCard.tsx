@@ -19,7 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { TaskForm } from './task-form'
+import { TaskForm } from './TaskForm'
 import { Pencil, Trash2 } from 'lucide-react'
 import { TASK_PRIORITIES, TASK_STATUSES } from '@/utils/constants/tasks'
 
@@ -45,11 +45,10 @@ interface TaskCardProps {
     updatedAt: Date,
     deletedAt: Date | null,
   }
-  onDelete: (id: string) => void
+  onDelete: (id: string) => Promise<{ error?: string; success?: boolean }>
 }
 
-export function
-  TaskCard({ task, onDelete }: TaskCardProps) {
+export function TaskCard({ task, onDelete }: TaskCardProps) {
   const [open, setOpen] = useState(false)
 
   const priorityColor = {
@@ -101,7 +100,10 @@ export function
         </Dialog>
 
         <form action={async () => {
-          await onDelete(task.id)
+          const result = await onDelete(task.id)
+          if (result?.error) {
+            alert(result.error)
+          }
         }}>
           <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
             <Trash2 className="h-4 w-4" />

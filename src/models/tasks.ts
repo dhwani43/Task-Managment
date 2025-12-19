@@ -11,6 +11,7 @@ export async function getTasks() {
         })
         return { tasks }
     } catch (error) {
+        console.error('Error fetching tasks:', error)
         return { error: 'Failed to fetch tasks' }
     }
 }
@@ -48,6 +49,7 @@ export async function createTask(formData: FormData) {
         revalidatePath('/')
         return { success: true }
     } catch (error) {
+        console.error('Error creating task:', error)
         return { error: 'Failed to create task' }
     }
 }
@@ -87,6 +89,7 @@ export async function updateTask(id: string, formData: FormData) {
         revalidatePath('/')
         return { success: true }
     } catch (error) {
+        console.error('Error updating task:', error)
         return { error: 'Failed to update task' }
     }
 }
@@ -102,6 +105,7 @@ export async function deleteTask(id: string) {
         revalidatePath('/')
         return { success: true }
     } catch (error) {
+        console.error('Error deleting task:', error)
         return { error: 'Failed to delete task' }
     }
 }
